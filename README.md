@@ -1,3 +1,9 @@
+First ReactJS / JavaScript Project from the [ReactJS tutorial](https://reactjs.org/tutorial/tutorial.html).
+
+Below lies the existing README
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
