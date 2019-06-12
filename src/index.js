@@ -2,19 +2,40 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css'
 
+/* Square renders a single <button>. constructor
+   initializes state as null, and on click the contents
+   becomes an X. */
 class Square extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: null,
+    };
+  }
+
+  /* By calling this.setState() from an onClick handler, we tell React to re-render
+     that Square whenever its <button> is clicked. After the update, the Square's
+     this.state.value will be 'X', so we'll see the X on the game board. */
   render() {
     return (
-      <button className="square">
-        {/* TODO */}
+      <button
+        className="square"
+        onClick={ () => this.setState({value: 'X'})}
+      >
+        {this.state.value}
       </button>
     );
   }
 }
 
+/* Board object. Contains two methods:
+   1. renderSquare, which returns a Square object
+      with a given value i
+   2. render(), which yields a 3x3 "matrix"
+      of Square objects, wtih values 1-9 */
 class Board extends React.Component {
   renderSquare(i) {
-    return <Square />;
+    return <Square value={i} />;
   }
 
   render() {
