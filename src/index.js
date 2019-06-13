@@ -6,23 +6,17 @@ import './index.css'
    initializes state as null, and on click the contents
    becomes an X. */
 class Square extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: null,
-    };
-  }
 
-  /* By calling this.setState() from an onClick handler, we tell React to re-render
-     that Square whenever its <button> is clicked. After the update, the Square's
-     this.state.value will be 'X', so we'll see the X on the game board. */
+  /* By calling this.props.onClick() from an onClick handler, we tell React to re-render
+     that Square whenever its <button> is clicked. After the update, the Square will
+     take on the value of this.props.value, and will be seen on the game board. */
   render() {
     return (
       <button
         className="square"
-        onClick={ () => this.setState({value: 'X'})}
+        onClick={() => this.props.onClick()}
       >
-        {this.state.value}
+        {this.props.value}
       </button>
     );
   }
@@ -34,8 +28,33 @@ class Square extends React.Component {
    2. render(), which yields a 3x3 "matrix"
       of Square objects, wtih values 1-9 */
 class Board extends React.Component {
+
+  /* Constructor sets the state of the game board as an
+     array of size 9 with all null values; this array will
+     allow us to keep track of the game by reading what's in
+     each Square (X, O, null) */
+  constructor(props) {
+    super(props);
+    this.state = { 
+      squares: Array(9).fill(null),
+    };
+  }
+
+  /* Pass two props from Board to Square: value anc onClick.
+     onClick prop is a function that Square can call when clicked. */
   renderSquare(i) {
-    return <Square value={i} />;
+    return (
+      <Square 
+        value={this.state.squares[i]}
+        onClick={() => this.handleClick(i)}
+      />
+    );
+  }
+
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    squares[i] = "X";
+    this.setState({squares: squares});
   }
 
   render() {
