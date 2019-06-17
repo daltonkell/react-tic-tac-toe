@@ -4,23 +4,21 @@ import './index.css'
 
 /* Square renders a single <button>. constructor
    initializes state as null, and on click the contents
-   becomes an X. */
-class Square extends React.Component {
+   becomes an X. Initially, this was a */
+function Square (props){
 
-  /* By calling this.props.onClick() from an onClick handler, we tell React to re-render
+  /* By calling props.onClick from an onClick handler, we tell React to re-render
      that Square whenever its <button> is clicked. After the update, the Square will
      take on the value of this.props.value, and will be seen on the game board. */
-  render() {
     return (
       <button
         className="square"
-        onClick={() => this.props.onClick()}
+        onClick={props.onClick}
       >
-        {this.props.value}
+        {props.value}
       </button>
     );
   }
-}
 
 /* Board object. Contains two methods:
    1. renderSquare, which returns a Square object
@@ -40,6 +38,26 @@ class Board extends React.Component {
     };
   }
 
+  calculateWinner(squares) {
+    const lines = [
+      [0, 1, 2], // rows
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6], // columns
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8], // diagonals
+      [2, 4, 8],
+    ];
+    for (let i=0; i<lines.length; ++i){
+      const [a, b, c] = lines[i]; // slice array
+      if (squares[a] && squares [a] === squares [b] && squares[a] === squares[c]) {
+        return squares[a]; // return the winner
+      }
+    }
+    return null; // otherwise return nothing, no winner
+  }
+
   /* Pass two props from Board to Square: value anc onClick.
      onClick prop is a function that Square can call when clicked. */
   renderSquare(i) {
@@ -53,12 +71,21 @@ class Board extends React.Component {
 
   handleClick(i) {
     const squares = this.state.squares.slice();
-    squares[i] = "X";
-    this.setState({squares: squares});
+    squares[i] = this.state.xIsNext ? "X": "O"; // use ternary operator to return value we want based on bool player turn
+    this.setState({
+      squares: squares,
+      xIsNext: !this.state.xIsNext, // change state by simply negating
+    });
   }
 
   render() {
-    const status = 'Next player: X';
+    const winner = this.calculateWinner(this.state.squares);
+    let status;
+    if (winner) {
+      status = "Winner: " + winner;
+    } else {
+      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+    }
 
     return (
       <div>
